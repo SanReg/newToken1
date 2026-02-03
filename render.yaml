@@ -1,12 +1,10 @@
 services:
   - type: web
     name: ryne-token-extractor
-    env: node
+    env: docker
     branch: main
     plan: free
-    buildCommand: |
-      npm ci
-      npx puppeteer browsers install chrome
+    dockerfilePath: ./Dockerfile
     startCommand: npm start
     envVars:
       - key: PUPPETEER_CACHE_DIR
