@@ -2,7 +2,7 @@ services:
   - type: web
     name: ryne-token-extractor
     env: node
-    branch: master
+    branch: main
     plan: free
     buildCommand: |
       npm ci
