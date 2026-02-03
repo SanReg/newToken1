@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: ryne-token-extractor
+    env: node
+    branch: master
+    plan: free
+    buildCommand: |
+      npm ci
+      npx puppeteer browsers install chrome
+    startCommand: npm start
+    envVars:
+      - key: PUPPETEER_CACHE_DIR
+        value: /tmp/puppeteer
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: 'false'
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /status
+    autoDeploy: true
