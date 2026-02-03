@@ -7,10 +7,10 @@ services:
     dockerfilePath: ./Dockerfile
     startCommand: npm start
     envVars:
-      - key: PUPPETEER_CACHE_DIR
-        value: /tmp/puppeteer
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: /usr/bin/chromium
       - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-        value: 'false'
+        value: 'true'
       - key: NODE_ENV
         value: production
     healthCheckPath: /status

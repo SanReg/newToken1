@@ -51,9 +51,10 @@ async function extractToken({ headless = true } = {}) {
 
   try {
     const launchOptions = { headless: !!headless, args: browserArgs };
-    // Allow overriding Chrome binary
-    if (process.env.CHROME_BIN || process.env.GOOGLE_CHROME_SHIM) {
-      launchOptions.executablePath = process.env.CHROME_BIN || process.env.GOOGLE_CHROME_SHIM;
+    // Allow overriding Chrome binary via env vars (PUPPETEER_EXECUTABLE_PATH, CHROME_BIN, etc.)
+    const execPath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_BIN || process.env.GOOGLE_CHROME_SHIM;
+    if (execPath) {
+      launchOptions.executablePath = execPath;
       console.log('Using Chrome executable:', launchOptions.executablePath);
     }
 

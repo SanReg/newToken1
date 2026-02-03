@@ -1,22 +1,20 @@
 FROM node:18-bullseye-slim
 
-# Install dependencies needed by Chromium
+# Install Chromium and dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium \
     ca-certificates wget gnupg fonts-liberation libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
     libgbm1 libasound2 libatk1.0-0 libgtk-3-0 libnss3 libxss1 libpangocairo-1.0-0 \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
-# Ensure Puppeteer cache is writable and Chromium will be installed
-ENV PUPPETEER_CACHE_DIR=/tmp/puppeteer
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+# Tell Puppeteer to skip downloading Chromium and use system Chromium instead
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 COPY package*.json ./
 RUN npm ci --production
-
-# Install Chromium used by Puppeteer at build time
-RUN npx puppeteer browsers install chrome --with-ffmpeg || true
 
 COPY . .
 
