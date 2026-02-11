@@ -17,7 +17,9 @@ require('dotenv').config();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors()); // Allow all origins
 const PORT = process.env.PORT || 3000;
 
 // extraction status tracker
@@ -182,18 +184,23 @@ async function main() {
   app.post('/extract', triggerHandler);
   app.get('/extract', triggerHandler);
 
-  // serve saved token and cookie files
-  app.get('/token', (req, res) => {
+  // serve saved token and cookie files (explicit CORS so these endpoints are not disallowed)
+  // allow simple cross-origin GETs and preflight OPTIONS
+  app.options(['/token', '/cookie'], cors());
+  app.get('/token', cors(), (req, res) => {
     const p = path.resolve('token.txt');
     if (!fs.existsSync(p)) return res.status(404).json({ error: 'token not found' });
     const data = fs.readFileSync(p, 'utf8');
+    // ensure browsers can read content-type and other safe headers
+    res.set('Access-Control-Expose-Headers', 'Content-Type');
     res.type('text/plain').send(data);
   });
 
-  app.get('/cookie', (req, res) => {
+  app.get('/cookie', cors(), (req, res) => {
     const p = path.resolve('Cookie.txt');
     if (!fs.existsSync(p)) return res.status(404).json({ error: 'cookie not found' });
     const data = fs.readFileSync(p, 'utf8');
+    res.set('Access-Control-Expose-Headers', 'Content-Type');
     res.type('text/plain').send(data);
   });
 
